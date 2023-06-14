@@ -21,10 +21,12 @@
 				<input type="text" class="form-control" name="id" value="${book.id }" disabled/>
 			</div>		
 		</c:if>
-		<div class="form-group">
-			<label for="illustration">Illustration</label>
-			<input type="file" class="form-control" name="illustration" value="${book.illustration }"/>
-		</div>
+		<c:if test="${empty book.id }">
+			<div class="form-group">
+				<label for="illustration">Illustration</label>
+				<input type="file" class="form-control" name="illustration" value="${book.illustration }"/>
+			</div>		
+		</c:if>
 		<div class="form-group">
 			<label for="title">Titre</label>
 			<input type="text" class="form-control" name="title" value="${book.title }"/>

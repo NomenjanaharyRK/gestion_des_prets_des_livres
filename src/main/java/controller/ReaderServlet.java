@@ -10,7 +10,6 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,25 +21,25 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import bean.BookBean;
-import dao.BookDao;
-import interfaces.IBookDao;
+import bean.ReaderBean;
+import dao.ReaderDao;
+import interfaces.IReaderDao;
 
 /**
- * Servlet implementation class BookServlet
+ * Servlet implementation class ReaderServlet
  */
-@WebServlet(name="bookServlet", urlPatterns = {"/books","*.book"})
-@MultipartConfig
-public class BookServlet extends HttpServlet {
+@WebServlet(name="readerServlet", urlPatterns = {"/readers","*.reader"})
+public class ReaderServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-	private IBookDao bookDao;
+	private IReaderDao readerDao;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public BookServlet() {
+    public ReaderServlet() {
         super();
-        bookDao = new BookDao();
+        readerDao = new ReaderDao();
     }
 
 	/**
@@ -48,30 +47,30 @@ public class BookServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String path = request.getServletPath();
-		if(path.equals("/books")) {
-			List<BookBean> books = bookDao.findAll();
-			request.setAttribute("books", books);
-			request.getRequestDispatcher("views/books/list.jsp").forward(request, response);
+		if(path.equals("/readers")) {
+			List<ReaderBean> readers = readerDao.findAll();
+			request.setAttribute("readers", readers);
+			request.getRequestDispatcher("views/reader/list.jsp").forward(request, response);
 		}
-		else if(path.equals("/new.book")) {
-			request.getRequestDispatcher("views/books/form.jsp").forward(request, response);
+		else if(path.equals("/new.reader")) {
+			request.getRequestDispatcher("views/reader/form.jsp").forward(request, response);
 		}
-		else if(path.equals("/info.book")) {
+		else if(path.equals("/update.reader")) {
 			Long id = Long.parseLong(request.getParameter("id"));
-			BookBean book = bookDao.findOne(id);
-			request.setAttribute("book", book);
-			request.getRequestDispatcher("views/books/info.jsp").forward(request, response);
+			ReaderBean reader = readerDao.findOne(id);
+			request.setAttribute("reader", reader);
+			request.getRequestDispatcher("views/reader/form.jsp").forward(request, response);
 		}
-		else if(path.equals("/update.book")) {
+		else if (path.equals("/info.reader")){
 			Long id = Long.parseLong(request.getParameter("id"));
-			BookBean book = bookDao.findOne(id);
-			request.setAttribute("book", book);
-			request.getRequestDispatcher("views/books/form.jsp").forward(request, response);
+			ReaderBean reader = readerDao.findOne(id);
+			request.setAttribute("reader", reader);
+			request.getRequestDispatcher("views/reader/info.jsp").forward(request, response);			
 		}
-		else if(path.equals("/delete.book")) {
+		else if(path.equals("/delete.reader")) {
 			Long id = Long.parseLong(request.getParameter("id"));
-			bookDao.delete(id);
-			response.sendRedirect("books");
+			readerDao.delete(id);
+			response.sendRedirect("readers");
 		}
 		else {
 			response.setStatus(Response.SC_NOT_FOUND);
@@ -83,9 +82,9 @@ public class BookServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String path = request.getServletPath();
-		
-		if(path.equals("/new.book")) {
+		if(path.equals("/new.reader")) {
 			HashMap<String, String> fields = new HashMap<>();
+			String illustration;
 			try {
 				DiskFileItemFactory factory = new DiskFileItemFactory();
 				ServletContext servletContext = this.getServletConfig().getServletContext();
@@ -102,7 +101,7 @@ public class BookServlet extends HttpServlet {
 						fields.put(item.getFieldName(), item.getString());
 					}
 					else {
-						String illustration = item.getName();
+						illustration = item.getName();
 						fields.put("illustration", illustration);
 						if(illustration == null || illustration.equals("")) {
 							break;
@@ -118,38 +117,40 @@ public class BookServlet extends HttpServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			String title = fields.get("title");
-			String description = fields.get("description");
-			String author = fields.get("author");
-			String publishedAt = fields.get("published_at");
-			String illustration = fields.get("illustration");
 			
-			BookBean book = new BookBean();
-			book.setTitle(title);
-			book.setAuthor(author);
-			book.setDescription(description);
-			book.setPublishedAt(publishedAt);
-			book.setIllustration(illustration);
+			String name = fields.get("name");
+			String lastname = fields.get("lastname");
+			String address = fields.get("address");
+			String phone = fields.get("phone");
+			String email = fields.get("email");
+			String cin = fields.get("cin");
+			illustration = fields.get("illustration");
 			
-			bookDao.create(book);
+			ReaderBean reader = new ReaderBean(name,lastname,email,phone, address, illustration, cin);
 			
-			response.sendRedirect("books");
-		}
-		else if(path.equals("/update.book")) {
-			Long id = Long.parseLong(request.getParameter("id"));
-			String title = request.getParameter("title");
-			String author = request.getParameter("author");
-			String description = request.getParameter("description");
-			String publishedAt = request.getParameter("publishedAt");
+			readerDao.create(reader);
 				
-			BookBean book = bookDao.findOne(id);
-			book.setTitle(title);
-			book.setAuthor(author);
-			book.setDescription(description);
-			book.setPublishedAt(publishedAt);
+			response.sendRedirect("readers");
+		}
+		else if(path.equals("/update.reader")) {
+			Long id = Long.parseLong(request.getParameter("id"));
+			String name = request.getParameter("name");
+			String lastname = request.getParameter("lastname");
+			String address = request.getParameter("address");
+			String phone = request.getParameter("phone");
+			String email = request.getParameter("email");
+			String cin = request.getParameter("cin");
 			
-			bookDao.update(book);
-			response.sendRedirect("books");
+			ReaderBean reader = readerDao.findOne(id);
+			reader.setName(name);
+			reader.setLastname(lastname);
+			reader.setAddress(address);
+			reader.setPhone(phone);
+			reader.setEmail(email);
+			reader.setCin(cin);
+			
+			readerDao.update(reader);
+			response.sendRedirect("readers");
 		}
 		else {
 			response.setStatus(Response.SC_NOT_FOUND);

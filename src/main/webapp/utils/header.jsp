@@ -38,7 +38,7 @@
 	        <%="<a class='nav-link' aria-current='page' href='books'>Livres</a>"%>
 	        <%="</li>"%>
 	        <%="<li class='nav-item'>"%>
-	        <%="<a class='nav-link' href='reader'>Lecteurs</a>"%>
+	        <%="<a class='nav-link' href='readers'>Lecteurs</a>"%>
 	        <%="</li>"%>
 	        <%="<li class='nav-item'>"%>
 	        <%="<a class='nav-link'>Prets</a>"%>
