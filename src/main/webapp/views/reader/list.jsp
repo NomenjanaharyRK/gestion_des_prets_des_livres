@@ -6,8 +6,8 @@
 	<div class="row mt-4">
 		<c:forEach items="${readers}" var="reader">
 			<div class="col-md-3">
-				<div class="card my-2" style="width:90%">
-					<img src="uploads/${reader.illustration }" class="card-img-top" alt="illustration" style="height:250px">
+				<div class="card my-2">
+					<img src="uploads/${reader.illustration }" class="card-img-top" alt="illustration" style="height:300px">
 					<div class="card-body">
 						<h5 class="card-title">${reader.name }</h5>
 						<p class="card-text">${reader.lastname }</p>

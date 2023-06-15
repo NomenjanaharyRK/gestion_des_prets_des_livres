@@ -5,6 +5,7 @@ import java.util.List;
 import bean.ReaderBean;
 
 public interface IReaderDao {
+	public List<ReaderBean> findAllWhoCanLendABook();
 	public List<ReaderBean> findAll();
 	public ReaderBean findOne(Long id);
 	public void create(ReaderBean reader);

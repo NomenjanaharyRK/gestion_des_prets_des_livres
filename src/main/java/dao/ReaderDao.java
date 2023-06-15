@@ -31,6 +31,7 @@ public class ReaderDao implements IReaderDao{
 				reader.setCin(rs.getString("cin"));
 				reader.setIllustration(rs.getString("illustration"));
 				reader.setNbPretActuel(rs.getInt("nb_pret"));
+				reader.setNbPretTotal(rs.getInt("nb_pret_total"));
 				readers.add(reader);
 			}
 			ps.close();
@@ -60,6 +61,7 @@ public class ReaderDao implements IReaderDao{
 				reader.setCin(rs.getString("cin"));
 				reader.setIllustration(rs.getString("illustration"));
 				reader.setNbPretActuel(rs.getInt("nb_pret"));
+				reader.setNbPretTotal(rs.getInt("nb_pret_total"));
 			}
 			ps.close();
 		} catch (SQLException e) {
@@ -73,7 +75,7 @@ public class ReaderDao implements IReaderDao{
 		Connection connection = DatabaseConnexion.getConnection();
 		try {
 			PreparedStatement ps = connection.prepareStatement
-					("INSERT INTO READER (NAME,LASTNAME,ADDRESS,EMAIL,PHONE,CIN,ILLUSTRATION,NB_PRET) VALUES (?,?,?,?,?,?,?,?)");
+					("INSERT INTO READER (NAME,LASTNAME,ADDRESS,EMAIL,PHONE,CIN,ILLUSTRATION,NB_PRET,NB_PRET_TOTAL) VALUES (?,?,?,?,?,?,?,?,?)");
 			ps.setString(1, reader.getName());
 			ps.setString(2, reader.getLastname());
 			ps.setString(3, reader.getAddress());
@@ -82,6 +84,7 @@ public class ReaderDao implements IReaderDao{
 			ps.setString(6, reader.getCin());
 			ps.setString(7, reader.getIllustration());
 			ps.setInt(8, reader.getNbPretActuel());
+			ps.setInt(9, reader.getNbPretTotal());
 			ps.executeUpdate();
 			ps.close();
 		} catch (SQLException e) {
@@ -94,7 +97,7 @@ public class ReaderDao implements IReaderDao{
 		Connection connection = DatabaseConnexion.getConnection();
 		try {
 			PreparedStatement ps = connection.prepareStatement
-					("UPDATE READER SET NAME=?,LASTNAME=?,ADDRESS=?,EMAIL=?,PHONE=?,CIN=?,ILLUSTRATION=? WHERE ID=?");
+					("UPDATE READER SET NAME=?,LASTNAME=?,ADDRESS=?,EMAIL=?,PHONE=?,CIN=?,ILLUSTRATION=?, NB_PRET = ?, NB_PRET_TOTAL = ?  WHERE ID=?");
 			ps.setString(1, reader.getName());
 			ps.setString(2, reader.getLastname());
 			ps.setString(3, reader.getAddress());
@@ -102,7 +105,9 @@ public class ReaderDao implements IReaderDao{
 			ps.setString(5, reader.getPhone());
 			ps.setString(6, reader.getCin());
 			ps.setString(7, reader.getIllustration());
-			ps.setLong(8, reader.getId());
+			ps.setInt(8, reader.getNbPretActuel());
+			ps.setInt(9, reader.getNbPretTotal());
+			ps.setLong(10, reader.getId());
 			ps.executeUpdate();
 			ps.close();
 		} catch (SQLException e) {
@@ -121,6 +126,34 @@ public class ReaderDao implements IReaderDao{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}	
+	}
+
+	@Override
+	public List<ReaderBean> findAllWhoCanLendABook() {
+		List<ReaderBean> readers = new ArrayList<>();
+		Connection connection = DatabaseConnexion.getConnection();
+		try {
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM READER WHERE NB_PRET < 3");
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				ReaderBean reader = new ReaderBean();
+				reader.setId(rs.getLong("id"));
+				reader.setName(rs.getString("name"));
+				reader.setLastname(rs.getString("lastname"));
+				reader.setAddress(rs.getString("address"));
+				reader.setEmail(rs.getString("email"));
+				reader.setPhone(rs.getString("phone"));
+				reader.setCin(rs.getString("cin"));
+				reader.setIllustration(rs.getString("illustration"));
+				reader.setNbPretActuel(rs.getInt("nb_pret"));
+				reader.setNbPretTotal(rs.getInt("nb_pret_total"));
+				readers.add(reader);
+			}
+			ps.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return readers;
 	}
 	
 }

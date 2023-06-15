@@ -65,13 +65,15 @@ public class BookDao implements IBookDao {
 	public void update(BookBean book) {
 		Connection connection = DatabaseConnexion.getConnection();
 		try {
-			PreparedStatement ps = connection.prepareStatement("UPDATE BOOK SET TITLE=?,DESCRIPTION=?,AUTHOR=?,ILLUSTRATION=?,PUBLISHED_AT=? WHERE ID=?");
+			PreparedStatement ps = connection.prepareStatement("UPDATE BOOK SET TITLE=?,DESCRIPTION=?,AUTHOR=?,ILLUSTRATION=?,PUBLISHED_AT=?, NB_PRET = ?, STATUS = ? WHERE ID=?");
 			ps.setString(1, book.getTitle());
 			ps.setString(2, book.getDescription());
 			ps.setString(3, book.getAuthor());
 			ps.setString(4, book.getIllustration());
 			ps.setString(5, book.getPublishedAt());
-			ps.setLong(6, book.getId());
+			ps.setInt(6, book.getNbPret());
+			ps.setBoolean(7, book.isStatus());
+			ps.setLong(8, book.getId());
 			ps.executeUpdate();
 			ps.close();
 		} catch (SQLException e) {
@@ -116,6 +118,35 @@ public class BookDao implements IBookDao {
 			e.printStackTrace();
 		}
 		return book;
+	}
+
+	@Override
+	public List<BookBean> findByStatus(boolean status) {
+		List<BookBean> books = new ArrayList<>();
+		Connection connection = DatabaseConnexion.getConnection();
+		
+		try {
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM BOOK WHERE STATUS = ?");
+			ps.setBoolean(1, status);
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				BookBean book = new BookBean();
+				book.setId(rs.getLong("id"));
+				book.setTitle(rs.getString("title"));
+				book.setDescription(rs.getString("description"));
+				book.setAuthor(rs.getString("author"));
+				book.setPublishedAt(rs.getString("published_at"));
+				book.setStatus(rs.getBoolean("status"));
+				book.setIllustration(rs.getString("illustration"));
+				book.setNbPret(rs.getInt("nb_pret"));
+				books.add(book);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return books;
 	}
 
 }

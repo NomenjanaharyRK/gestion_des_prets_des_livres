@@ -20,7 +20,6 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
-import bean.BookBean;
 import bean.ReaderBean;
 import dao.ReaderDao;
 import interfaces.IReaderDao;
@@ -59,7 +58,7 @@ public class ReaderServlet extends HttpServlet {
 			Long id = Long.parseLong(request.getParameter("id"));
 			ReaderBean reader = readerDao.findOne(id);
 			request.setAttribute("reader", reader);
-			request.getRequestDispatcher("views/reader/form.jsp").forward(request, response);
+			request.getRequestDispatcher("views/reader/update.jsp").forward(request, response);
 		}
 		else if (path.equals("/info.reader")){
 			Long id = Long.parseLong(request.getParameter("id"));
@@ -83,54 +82,57 @@ public class ReaderServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String path = request.getServletPath();
 		if(path.equals("/new.reader")) {
-			HashMap<String, String> fields = new HashMap<>();
-			String illustration;
-			try {
-				DiskFileItemFactory factory = new DiskFileItemFactory();
-				ServletContext servletContext = this.getServletConfig().getServletContext();
-				File repository = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
-				factory.setRepository(repository);
-				ServletFileUpload upload = new ServletFileUpload(factory);
-				List<FileItem> items = upload.parseRequest(request);
-				Iterator<FileItem> iter = items.iterator();
-				
-				while(iter.hasNext()) {
-					FileItem item = iter.next();
+			if(ServletFileUpload.isMultipartContent(request)) {
+				HashMap<String, String> fields = new HashMap<>();
+				String illustration;
+				try {
+					DiskFileItemFactory factory = new DiskFileItemFactory();
+					ServletContext servletContext = this.getServletConfig().getServletContext();
+					File repository = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
+					factory.setRepository(repository);
+					ServletFileUpload upload = new ServletFileUpload(factory);
+					List<FileItem> items = upload.parseRequest(request);
+					Iterator<FileItem> iter = items.iterator();
 					
-					if(item.isFormField()) {
-						fields.put(item.getFieldName(), item.getString());
-					}
-					else {
-						illustration = item.getName();
-						fields.put("illustration", illustration);
-						if(illustration == null || illustration.equals("")) {
-							break;
-						}else {
-				    		Path filePath = Paths.get(illustration);
-				    		String storePath = this.getServletContext().getRealPath("/uploads");
-				    		File uploadFile = new File(storePath + "/" + filePath.getFileName());
-				    		item.write(uploadFile);
+					while(iter.hasNext()) {
+						FileItem item = iter.next();
+						
+						if(item.isFormField()) {
+							fields.put(item.getFieldName(), item.getString());
+						}
+						else {
+							illustration = item.getName();
+							fields.put("illustration", illustration);
+							if(illustration == null || illustration.equals("")) {
+								break;
+							}else {
+								Path filePath = Paths.get(illustration);
+								String storePath = this.getServletContext().getRealPath("/uploads");
+								File uploadFile = new File(storePath + "/" + filePath.getFileName());
+								item.write(uploadFile);
+							}
 						}
 					}
+					
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 				
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-			String name = fields.get("name");
-			String lastname = fields.get("lastname");
-			String address = fields.get("address");
-			String phone = fields.get("phone");
-			String email = fields.get("email");
-			String cin = fields.get("cin");
-			illustration = fields.get("illustration");
-			
-			ReaderBean reader = new ReaderBean(name,lastname,email,phone, address, illustration, cin);
-			
-			readerDao.create(reader);
+				String name = fields.get("name");
+				String lastname = fields.get("lastname");
+				String address = fields.get("address");
+				String phone = fields.get("phone");
+				String email = fields.get("email");
+				String cin = fields.get("cin");
+				illustration = fields.get("illustration");
 				
-			response.sendRedirect("readers");
+				ReaderBean reader = new ReaderBean(name,lastname,email,phone, address, illustration, cin);
+				
+				readerDao.create(reader);
+				
+				response.sendRedirect("readers");
+				
+			}
 		}
 		else if(path.equals("/update.reader")) {
 			Long id = Long.parseLong(request.getParameter("id"));

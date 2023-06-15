@@ -31,6 +31,10 @@
 					<tr>
 						<td><strong>Nombre de pret actuel</strong></td>
 						<td>${reader.nbPretActuel }</td>
+					</tr>	
+					<tr>
+						<td><strong>Nombre de pret total effectué</strong></td>
+						<td>${reader.nbPretTotal }</td>
 					</tr>				
 				</tbody>
 			</table>

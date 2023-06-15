@@ -17,6 +17,7 @@ public class ReaderBean implements Serializable{
 	private String address;
 	private String illustration;
 	private int nbPretActuel;
+	private int nbPretTotal;
 	private String cin;
 	
 	public ReaderBean() {
@@ -105,5 +106,15 @@ public class ReaderBean implements Serializable{
 	public void setCin(String cin) {
 		this.cin = cin;
 	}
+
+	public int getNbPretTotal() {
+		return nbPretTotal;
+	}
+
+	public void setNbPretTotal(int nbPretTotal) {
+		this.nbPretTotal = nbPretTotal;
+	}
+	
+	
 	
 }

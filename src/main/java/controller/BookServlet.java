@@ -140,7 +140,7 @@ public class BookServlet extends HttpServlet {
 			String title = request.getParameter("title");
 			String author = request.getParameter("author");
 			String description = request.getParameter("description");
-			String publishedAt = request.getParameter("publishedAt");
+			String publishedAt = request.getParameter("published_at");
 				
 			BookBean book = bookDao.findOne(id);
 			book.setTitle(title);

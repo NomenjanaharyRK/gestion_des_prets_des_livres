@@ -41,7 +41,10 @@
 	        <%="<a class='nav-link' href='readers'>Lecteurs</a>"%>
 	        <%="</li>"%>
 	        <%="<li class='nav-item'>"%>
-	        <%="<a class='nav-link'>Prets</a>"%>
+	        <%="<a class='nav-link' href='lends'>Prets</a>"%>
+	        <%="</li>"%>
+	        <%="<li class='nav-item'>"%>
+	        <%="<a class='nav-link' href='almonds'>Amandes</a>"%>
 	        <%="</li>"%>
 	        <%="</ul>"%>
 	        <%="<div class='text-end'>"%>
