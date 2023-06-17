@@ -149,4 +149,34 @@ public class BookDao implements IBookDao {
 		return books;
 	}
 
+	@Override
+	public List<BookBean> searchByTitleOrAuthor(String key) {
+		List<BookBean> books = new ArrayList<>();
+		Connection connection = DatabaseConnexion.getConnection();
+		
+		try {
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM BOOK WHERE TITLE LIKE ? OR AUTHOR LIKE ?");
+			ps.setString(1, key);
+			ps.setString(2, key);
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				BookBean book = new BookBean();
+				book.setId(rs.getLong("id"));
+				book.setTitle(rs.getString("title"));
+				book.setDescription(rs.getString("description"));
+				book.setAuthor(rs.getString("author"));
+				book.setPublishedAt(rs.getString("published_at"));
+				book.setStatus(rs.getBoolean("status"));
+				book.setIllustration(rs.getString("illustration"));
+				book.setNbPret(rs.getInt("nb_pret"));
+				books.add(book);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return books;
+	}
+
 }

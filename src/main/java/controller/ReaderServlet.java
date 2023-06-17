@@ -51,6 +51,13 @@ public class ReaderServlet extends HttpServlet {
 			request.setAttribute("readers", readers);
 			request.getRequestDispatcher("views/reader/list.jsp").forward(request, response);
 		}
+		else if(path.equals("/search.reader")) {
+			String key = request.getParameter("key");
+			List<ReaderBean> readers = readerDao.searchByNameOrLastname("%" + key + "%");
+			request.setAttribute("key", key);
+			request.setAttribute("readers", readers);
+			request.getRequestDispatcher("views/reader/list.jsp").forward(request, response);	
+		}
 		else if(path.equals("/new.reader")) {
 			request.getRequestDispatcher("views/reader/form.jsp").forward(request, response);
 		}

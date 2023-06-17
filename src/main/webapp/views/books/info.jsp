@@ -3,7 +3,11 @@
 	<hr/>
 	<div class="row">
 		<div class="col-md-6">
-			<img src="uploads/${book.illustration }" class="img-fluid"/>
+			<div class="card">
+				<div class="card-body">
+					<img src="uploads/${book.illustration }" class="card-img-top" style="height:500px"/>				
+				</div>
+			</div>
 		</div>
 		<div class="col-md-6">
 			<h4 class="title">${book.title }</h4>

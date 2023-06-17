@@ -2,6 +2,7 @@ package controller;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -55,9 +56,32 @@ public class LendServlet extends HttpServlet {
 		String path = request.getServletPath();
 		if(path.equals("/lends")) {
 			List<LendBean> lends = lendDao.findAll();
+			List<ReaderBean> readers = readerDao.findAll();
+			String status = "finished";
+			request.setAttribute("status", status);
 			request.setAttribute("lends", lends);
+			request.setAttribute("readers", readers);
 			request.getRequestDispatcher("views/lend/list.jsp").forward(request, response);
 		}
+		else if(path.equals("/filter.lend")) {
+			String status = request.getParameter("status");
+			List<LendBean> lends = new ArrayList<>();
+			List<ReaderBean> readers = readerDao.findAll();
+			if(status.equals("finished")){
+				lends = lendDao.findByStatus(true);
+			}
+			else if(status.equals("current")) {
+				lends = lendDao.findByStatus(false);
+			}
+			else {
+				lends = lendDao.findAllLate();
+			}
+			request.setAttribute("lends", lends );
+			request.setAttribute("status", status);
+			request.setAttribute("readers", readers);
+			request.getRequestDispatcher("views/lend/list.jsp").forward(request, response);
+		}
+
 		else if(path.equals("/new.lend")) {
 			List<BookBean> books = bookDao.findByStatus(true);
 			List<ReaderBean> readers = readerDao.findAllWhoCanLendABook();

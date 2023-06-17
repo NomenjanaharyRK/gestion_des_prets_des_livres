@@ -53,6 +53,13 @@ public class BookServlet extends HttpServlet {
 			request.setAttribute("books", books);
 			request.getRequestDispatcher("views/books/list.jsp").forward(request, response);
 		}
+		else if(path.equals("/search.book")) {
+			String key = request.getParameter("key");
+			List <BookBean> books = bookDao.searchByTitleOrAuthor("%"+ key + "%");
+			request.setAttribute("books", books);
+			request.setAttribute("key", key);
+			request.getRequestDispatcher("views/books/list.jsp").forward(request, response);
+		}
 		else if(path.equals("/new.book")) {
 			request.getRequestDispatcher("views/books/form.jsp").forward(request, response);
 		}

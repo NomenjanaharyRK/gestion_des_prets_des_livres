@@ -24,7 +24,7 @@
 <link rel="stylesheet" type="text/css" href="css/fontawesome.min.css"/>
 <link rel="stylesheet" type="text/css" href="css/all.min.css"/>
 </head>
-<body>
+<body class="bg-light">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark" aria-label="Eighth navbar example">
     <div class="container">
       <a class="navbar-brand" href="<%= logo_link %>">Gestion des Prets</a>
@@ -55,4 +55,4 @@
       </div>
     </div>
   </nav>
-<div class="container mt-3">
+<div class="container p-2">

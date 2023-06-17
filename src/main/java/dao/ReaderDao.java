@@ -155,5 +155,35 @@ public class ReaderDao implements IReaderDao{
 		}
 		return readers;
 	}
+
+	@Override
+	public List<ReaderBean> searchByNameOrLastname(String key) {
+		List<ReaderBean> readers = new ArrayList<>();
+		Connection connection = DatabaseConnexion.getConnection();
+		try {
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM READER WHERE NAME LIKE ? OR LASTNAME LIKE ?");
+			ps.setString(1, key);
+			ps.setString(2, key);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				ReaderBean reader = new ReaderBean();
+				reader.setId(rs.getLong("id"));
+				reader.setName(rs.getString("name"));
+				reader.setLastname(rs.getString("lastname"));
+				reader.setAddress(rs.getString("address"));
+				reader.setEmail(rs.getString("email"));
+				reader.setPhone(rs.getString("phone"));
+				reader.setCin(rs.getString("cin"));
+				reader.setIllustration(rs.getString("illustration"));
+				reader.setNbPretActuel(rs.getInt("nb_pret"));
+				reader.setNbPretTotal(rs.getInt("nb_pret_total"));
+				readers.add(reader);
+			}
+			ps.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return readers;
+	}
 	
 }
